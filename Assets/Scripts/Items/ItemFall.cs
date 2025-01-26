@@ -17,4 +17,22 @@ public class ItemFall : MonoBehaviour
             _rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY;
         }
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        _rigidbody.constraints = RigidbodyConstraints2D.None;
+    }
+
+
+    public void Resolve()
+    {
+        _rigidbody.constraints = RigidbodyConstraints2D.None;
+        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+    }
+
+    public void Reject()
+    {
+        _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+        _rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY;
+    }
 }

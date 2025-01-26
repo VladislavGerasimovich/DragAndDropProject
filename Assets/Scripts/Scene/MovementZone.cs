@@ -8,25 +8,15 @@ public class MovementZone : MonoBehaviour
     [SerializeField] private float _multiplier;
     [SerializeField] private ControllerMovement _controllerMovement;
 
-    private bool _isActive;
     private bool _inZone;
     private Coroutine _coroutine;
 
-    public void SetActive(bool isActive)
-    {
-        _isActive = isActive;
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (_isActive == true)
+        if(collision.TryGetComponent(out ItemFall itemfall))
         {
-            Debug.Log("is active true");
-            if(collision.TryGetComponent(out ItemFall itemfall))
-            {
-                _inZone = true;
-                _coroutine = StartCoroutine(Run());
-            }
+            _inZone = true;
+            _coroutine = StartCoroutine(Run());
         }
     }
 

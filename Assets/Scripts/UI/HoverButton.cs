@@ -3,20 +3,19 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class ButtonHover : MonoBehaviour
+public class HoverButton : MonoBehaviour
 {
     [SerializeField] private ControllerMovement _controllerMovement;
     [SerializeField] private float _multiplier;
 
     private bool _isActive;
-    private Button button;
+    private Button _button;
     private bool _inZone;
-    private Coroutine _coroutine;
 
     private void Start()
     {
-        button = GetComponent<Button>();
-        EventTrigger trigger = button.gameObject.AddComponent<EventTrigger>();
+        _button = GetComponent<Button>();
+        EventTrigger trigger = _button.gameObject.AddComponent<EventTrigger>();
         EventTrigger.Entry entry = new EventTrigger.Entry();
         entry.eventID = EventTriggerType.PointerEnter;
         entry.callback.AddListener((data) => { OnPointerEnter(); });
@@ -37,7 +36,7 @@ public class ButtonHover : MonoBehaviour
         if (_isActive == true)
         {
             _inZone = true;
-            _coroutine = StartCoroutine(Run());
+            StartCoroutine(Run());
         }
     }
     private void OnPointerExit()

@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 
 public class DragAndDrop : TouchInput, ICheckable
 {
-    [SerializeField] private List<ButtonHover> _buttonsHover;
+    [SerializeField] private HoverButtons _hoverButtons;
     [SerializeField] private int _layerNumber;
 
     private int _shelfLayerMask;
@@ -29,11 +28,7 @@ public class DragAndDrop : TouchInput, ICheckable
             if (isItem == true)
             {
                 _movementFinger = finger;
-
-                foreach (ButtonHover button in _buttonsHover)
-                {
-                    button.SetActive(true);
-                }
+                _hoverButtons.SetActive(true);
             }
         }
     }
@@ -69,22 +64,18 @@ public class DragAndDrop : TouchInput, ICheckable
 
                 if(shelf != null)
                 {
+                    ItemMove itemMove = _itemFall.GetComponent<ItemMove>();
+                    itemMove.Run(shelf.transform.position);
                     _itemFall = null;
+                    _hoverButtons.SetActive(false);
 
                     return;
                 }
             }
-            
 
-            _itemFall.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
-            _itemFall.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            _itemFall.Resolve();
             _itemFall = null;
-
-            foreach (ButtonHover button in _buttonsHover)
-            {
-                button.SetActive(false);
-            }
-
+            _hoverButtons.SetActive(false);
         }
     }
 
@@ -98,8 +89,9 @@ public class DragAndDrop : TouchInput, ICheckable
 
             if(_itemFall != null )
             {
-                _itemFall.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
-                _itemFall.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY;
+                ItemMove itemMove = _itemFall.GetComponent<ItemMove>();
+                itemMove.Stop();
+                _itemFall.Reject();
             }
         }
 
