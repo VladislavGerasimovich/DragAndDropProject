@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ControllerMovement : MonoBehaviour
+public class ControllerPosition : MonoBehaviour
 {
     private float _speed;
 

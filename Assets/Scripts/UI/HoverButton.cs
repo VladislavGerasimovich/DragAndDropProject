@@ -5,7 +5,7 @@ using System.Collections;
 
 public class HoverButton : MonoBehaviour
 {
-    [SerializeField] private ControllerMovement _controllerMovement;
+    [SerializeField] private ControllerPosition _controllerMovement;
     [SerializeField] private float _multiplier;
 
     private bool _isActive;

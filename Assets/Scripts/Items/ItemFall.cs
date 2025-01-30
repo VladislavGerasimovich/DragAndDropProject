@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class ItemFall : MonoBehaviour
+public class ItemPhysics : MonoBehaviour
 {
     private Rigidbody2D _rigidbody;
 
@@ -22,7 +22,6 @@ public class ItemFall : MonoBehaviour
     {
         _rigidbody.constraints = RigidbodyConstraints2D.None;
     }
-
 
     public void Resolve()
     {

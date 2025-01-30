@@ -4,9 +4,7 @@ using UnityEngine;
 public class ItemMove : MonoBehaviour
 {
     private float _speed;
-    private bool _isMoving;
-
-    public Coroutine Coroutine;
+    private Coroutine _coroutine;
 
     private void Awake()
     {
@@ -15,26 +13,32 @@ public class ItemMove : MonoBehaviour
 
     public void Run(Vector3 position)
     {
-        _isMoving = true;
-        Coroutine = StartCoroutine(RunCoroutine(position));
+        if(_coroutine == null)
+        {
+            _coroutine = StartCoroutine(RunCoroutine(position));
+        }
     }
 
     public void Stop()
     {
-        _isMoving = false;
+        if(_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+            _coroutine = null;
+        }
     }
 
     private IEnumerator RunCoroutine(Vector3 position)
     {
         Vector3 newPositon = new Vector3(position.x, position.y, transform.position.z);
 
-        while (transform.position != position && _isMoving == true)
+        while (transform.position != position)
         {
             transform.position = Vector3.Lerp(transform.position, newPositon, _speed * Time.deltaTime);
 
             yield return null;
         }
 
-        Coroutine = null;
+        _coroutine = null;
     }
 }

@@ -6,14 +6,14 @@ public class MovementZone : MonoBehaviour
 {
     [SerializeField] private Button _button;
     [SerializeField] private float _multiplier;
-    [SerializeField] private ControllerMovement _controllerMovement;
+    [SerializeField] private ControllerPosition _controllerMovement;
 
     private bool _inZone;
     private Coroutine _coroutine;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.TryGetComponent(out ItemFall itemfall))
+        if(collision.TryGetComponent(out ItemPhysics itemfall))
         {
             _inZone = true;
             _coroutine = StartCoroutine(Run());
@@ -22,7 +22,7 @@ public class MovementZone : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out ItemFall itemfall))
+        if (collision.TryGetComponent(out ItemPhysics itemfall))
         {
             StopCoroutine(_coroutine);
             _inZone = false;

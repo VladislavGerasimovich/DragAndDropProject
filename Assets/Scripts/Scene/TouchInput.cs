@@ -2,9 +2,9 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using ETouch = UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine;
 
-public abstract class TouchInput : MonoBehaviour
+public abstract class TouchInputHandler : MonoBehaviour
 {
-    protected Finger _movementFinger;
+    protected Finger MovementFinger;
 
     private void OnEnable()
     {

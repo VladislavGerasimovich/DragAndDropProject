@@ -2366,6 +2366,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hoverButtons: {fileID: 1856500931}
+  _shelfLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  _defaultLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
   _layerNumber: 7
 --- !u!4 &1682638005
 Transform:

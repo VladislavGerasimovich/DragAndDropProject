@@ -2,32 +2,26 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 
-public class DragAndDrop : TouchInput, ICheckable
+public class DragAndDropHandler : TouchInputHandler
 {
     [SerializeField] private HoverButtons _hoverButtons;
+    [SerializeField] private LayerMask _shelfLayerMask;
+    [SerializeField] private LayerMask _defaultLayerMask;
     [SerializeField] private int _layerNumber;
 
-    private int _shelfLayerMask;
-    private int _defaultLayerMask;
     private bool _isMoving;
-    private ItemFall _itemFall;
+    private ItemPhysics _itemFall;
     private Coroutine _coroutine;
-
-    private void Awake()
-    {
-        _shelfLayerMask = 1 << _layerNumber;
-        _defaultLayerMask = 1 << 0;
-    }
 
     public override void OnFingerDown(Finger finger)
     {
-        if (_movementFinger == null)
+        if (MovementFinger == null)
         {
             bool isItem = CheckItems(finger.screenPosition);
 
             if (isItem == true)
             {
-                _movementFinger = finger;
+                MovementFinger = finger;
                 _hoverButtons.SetActive(true);
             }
         }
@@ -35,7 +29,7 @@ public class DragAndDrop : TouchInput, ICheckable
 
     public override void OnFingerMove(Finger finger)
     {
-        if (finger == _movementFinger && _itemFall != null)
+        if (finger == MovementFinger && _itemFall != null)
         {
             _isMoving = true;
 
@@ -51,27 +45,17 @@ public class DragAndDrop : TouchInput, ICheckable
 
     public override void OnFingerUp(Finger finger)
     {
-        if (finger == _movementFinger)
+        if (finger == MovementFinger)
         {
             _isMoving = false;
-            _movementFinger = null;
-            
+            MovementFinger = null;
             RaycastHit2D hit = Raycast(finger.screenPosition, _shelfLayerMask);
+            bool isShelf = CheckShelf(hit);
 
-            if (hit.collider != null)
+            if(isShelf == true)
             {
-                Shelf shelf = hit.transform.gameObject.GetComponent<Shelf>();
-
-                if(shelf != null)
-                {
-                    ItemMove itemMove = _itemFall.GetComponent<ItemMove>();
-                    itemMove.Run(shelf.transform.position);
-                    _itemFall = null;
-                    _hoverButtons.SetActive(false);
-
-                    return;
-                }
-            }
+                return;
+            }               
 
             _itemFall.Resolve();
             _itemFall = null;
@@ -85,7 +69,7 @@ public class DragAndDrop : TouchInput, ICheckable
 
         if (hit.collider != null)
         {
-            _itemFall = hit.transform.gameObject.GetComponent<ItemFall>();
+            _itemFall = hit.transform.gameObject.GetComponent<ItemPhysics>();
 
             if(_itemFall != null )
             {
@@ -115,12 +99,32 @@ public class DragAndDrop : TouchInput, ICheckable
     {
         while(_isMoving == true)
         {
-            Vector3 worldPosition = new Vector3(Camera.main.ScreenToWorldPoint(_movementFinger.screenPosition).x,
-                Camera.main.ScreenToWorldPoint(_movementFinger.screenPosition).y,
+            Vector3 worldPosition = new Vector3(Camera.main.ScreenToWorldPoint(MovementFinger.screenPosition).x,
+                Camera.main.ScreenToWorldPoint(MovementFinger.screenPosition).y,
                 _itemFall.transform.position.z);
             _itemFall.transform.position = worldPosition;
 
             yield return null;
         }
+    }
+
+    private bool CheckShelf(RaycastHit2D hit)
+    {
+        if (hit.collider != null)
+        {
+            Shelf shelf = hit.transform.gameObject.GetComponent<Shelf>();
+
+            if (shelf != null)
+            {
+                ItemMove itemMove = _itemFall.GetComponent<ItemMove>();
+                itemMove.Run(shelf.transform.position);
+                _itemFall = null;
+                _hoverButtons.SetActive(false);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -3,9 +3,9 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using ETouch = UnityEngine.InputSystem.EnhancedTouch;
 
 [RequireComponent(typeof(RestrictMovement))]
-public class Movement : TouchInput, ICheckable
+public class MovingAroundScene : TouchInputHandler
 {
-    [SerializeField] private ControllerMovement _controllerMovement;
+    [SerializeField] private ControllerPosition _controllerMovement;
 
     private RestrictMovement _restrictMovement;
     private Vector2 _touchPosition;
@@ -17,7 +17,7 @@ public class Movement : TouchInput, ICheckable
 
     public override void OnFingerMove(Finger finger)
     {
-        if (finger == _movementFinger)
+        if (finger == MovementFinger)
         {
             ETouch.Touch currentTouch = finger.currentTouch;
             float newPositionX = (currentTouch.screenPosition - _touchPosition).normalized.x;
@@ -29,21 +29,21 @@ public class Movement : TouchInput, ICheckable
 
     public override void OnFingerUp(Finger finger)
     {
-        if (finger == _movementFinger)
+        if (finger == MovementFinger)
         {
-            _movementFinger = null;
+            MovementFinger = null;
         }
     }
 
     public override void OnFingerDown(Finger finger)
     {
-        if (_movementFinger == null)
+        if (MovementFinger == null)
         {
             bool isItem = CheckItems(finger.screenPosition);
 
             if(isItem == false)
             {
-                _movementFinger = finger;
+                MovementFinger = finger;
                 _touchPosition = finger.screenPosition;
             }
         }
@@ -53,11 +53,11 @@ public class Movement : TouchInput, ICheckable
     {
         Vector2 worldPosition = Camera.main.ScreenToWorldPoint(position);
         RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
-        ItemFall itemFall = null;
+        ItemPhysics itemFall = null;
 
         if (hit.collider != null)
         {
-            itemFall = hit.transform.gameObject.GetComponent<ItemFall>();
+            itemFall = hit.transform.gameObject.GetComponent<ItemPhysics>();
         }
 
         if(itemFall != null)
