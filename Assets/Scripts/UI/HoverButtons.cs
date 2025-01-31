@@ -1,15 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HoverButtons : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private List<HoverButton> _buttons;
-
-    public void SetActive(bool value)
+    public class HoverButtons : MonoBehaviour
     {
-        foreach (var button in _buttons)
+        [SerializeField] private List<HoverButton> _buttons;
+
+        public void SetActive(bool value)
         {
-            button.SetActive(value);
+            foreach (var button in _buttons)
+            {
+                button.SetActive(value);
+            }
         }
     }
 }

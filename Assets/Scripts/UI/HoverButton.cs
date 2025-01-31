@@ -3,66 +3,73 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 using static UnityEngine.EventSystems.EventTrigger;
+using UI;
+using System.Collections.Generic;
+using UnityEngine.Events;
+using Scene;
 
-public class HoverButton : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private ControllerPosition _controllerMovement;
-    [SerializeField] private float _multiplier;
-
-    private bool _isActive;
-    private Button _button;
-    private bool _inZone;
-
-    private delegate void OnPointerDelegate();
-
-    private void Start()
+    public class HoverButton : MonoBehaviour
     {
-        _button = GetComponent<Button>();
-        EventTrigger trigger = _button.gameObject.AddComponent<EventTrigger>();
-        EventTrigger.Entry entry = new EventTrigger.Entry();
-        OnPointerDelegate onPointerDelegate = new OnPointerDelegate(OnPointerEnter);
-        CreateEvent(trigger, entry, EventTriggerType.PointerEnter, onPointerDelegate);
-        entry = new EventTrigger.Entry();
-        onPointerDelegate = new OnPointerDelegate(OnPointerExit);
-        CreateEvent(trigger, entry, EventTriggerType.PointerExit, onPointerDelegate);
-    }
+        [SerializeField] private ControllerPosition _controllerMovement;
+        [SerializeField] private RestrictMovement _restrictMovement;
+        [SerializeField] private float _multiplier;
 
-    public void SetActive(bool isActive)
-    {
-        _isActive = isActive;
-    }
+        private Dictionary<Entry, UnityAction<BaseEventData>> _events;
+        private bool _isActive;
+        private Button _button;
+        private bool _inZone;
 
-    private void CreateEvent(EventTrigger trigger,
-        Entry entry,
-        EventTriggerType type,
-        OnPointerDelegate onPointerDelegate)
-    {
-        entry.eventID = type;
-        entry.callback.AddListener((data) => { onPointerDelegate(); });
-        trigger.triggers.Add(entry);
-    }
-
-    private void OnPointerEnter()
-    {
-        if (_isActive == true)
+        private void Start()
         {
-            _inZone = true;
-            StartCoroutine(Run());
+            _events = new Dictionary<Entry, UnityAction<BaseEventData>>();
+            _button = GetComponent<Button>();
+            EventTrigger trigger = _button.gameObject.AddComponent<EventTrigger>();
+            Entry enterTrigger = EntryFactory.Create(EventTriggerType.PointerEnter, OnPointerEnter);
+            trigger.triggers.Add(enterTrigger);
+            _events.Add(enterTrigger, OnPointerEnter);
+            Entry exitTrigger = EntryFactory.Create(EventTriggerType.PointerExit, OnPointerExit);
+            trigger.triggers.Add(exitTrigger);
+            _events.Add(exitTrigger, OnPointerExit);
         }
-    }
 
-    private void OnPointerExit()
-    {
-        _inZone = false;
-    }
-
-    private IEnumerator Run()
-    {
-        while (_inZone == true && _isActive == true)
+        private void OnDisable()
         {
-            _controllerMovement.Run(_multiplier);
+            foreach (var item in _events)
+            {
+                item.Key.callback.RemoveListener(item.Value);
+            }
+        }
 
-            yield return null;
+        public void SetActive(bool isActive)
+        {
+            _isActive = isActive;
+        }
+
+        private void OnPointerEnter(BaseEventData _)
+        {
+            if (_isActive == true)
+            {
+                _inZone = true;
+                StartCoroutine(Run());
+            }
+        }
+
+        private void OnPointerExit(BaseEventData _)
+        {
+            _inZone = false;
+        }
+
+        private IEnumerator Run()
+        {
+            while (_inZone == true && _isActive == true)
+            {
+                _controllerMovement.Run(_multiplier);
+                _restrictMovement.SetPosition();
+
+                yield return null;
+            }
         }
     }
 }

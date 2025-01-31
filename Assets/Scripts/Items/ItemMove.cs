@@ -1,44 +1,47 @@
 using System.Collections;
 using UnityEngine;
 
-public class ItemMove : MonoBehaviour
+namespace Items 
 {
-    private float _speed;
-    private Coroutine _coroutine;
-
-    private void Awake()
+    public class ItemMove : MonoBehaviour
     {
-        _speed = 2f;
-    }
+        private float _speed;
+        private Coroutine _coroutine;
 
-    public void Run(Vector3 position)
-    {
-        if(_coroutine == null)
+        private void Awake()
         {
-            _coroutine = StartCoroutine(RunCoroutine(position));
+            _speed = 2f;
         }
-    }
 
-    public void Stop()
-    {
-        if(_coroutine != null)
+        public void Run(Vector3 position)
         {
-            StopCoroutine(_coroutine);
+            if (_coroutine == null)
+            {
+                _coroutine = StartCoroutine(RunCoroutine(position));
+            }
+        }
+
+        public void Stop()
+        {
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+                _coroutine = null;
+            }
+        }
+
+        private IEnumerator RunCoroutine(Vector3 position)
+        {
+            Vector3 newPositon = new Vector3(position.x, position.y, transform.position.z);
+
+            while (transform.position != position)
+            {
+                transform.position = Vector3.Lerp(transform.position, newPositon, _speed * Time.deltaTime);
+
+                yield return null;
+            }
+
             _coroutine = null;
         }
-    }
-
-    private IEnumerator RunCoroutine(Vector3 position)
-    {
-        Vector3 newPositon = new Vector3(position.x, position.y, transform.position.z);
-
-        while (transform.position != position)
-        {
-            transform.position = Vector3.Lerp(transform.position, newPositon, _speed * Time.deltaTime);
-
-            yield return null;
-        }
-
-        _coroutine = null;
     }
 }

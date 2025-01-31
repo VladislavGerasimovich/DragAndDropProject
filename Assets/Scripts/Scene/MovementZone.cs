@@ -1,42 +1,46 @@
+using Items;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MovementZone : MonoBehaviour
+namespace Scene
 {
-    [SerializeField] private Button _button;
-    [SerializeField] private float _multiplier;
-    [SerializeField] private ControllerPosition _controllerMovement;
-
-    private bool _inZone;
-    private Coroutine _coroutine;
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    public class MovementZone : MonoBehaviour
     {
-        if(collision.TryGetComponent(out ItemPhysics itemfall))
+        [SerializeField] private Button _button;
+        [SerializeField] private float _multiplier;
+        [SerializeField] private ControllerPosition _controllerMovement;
+
+        private bool _inZone;
+        private Coroutine _coroutine;
+
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            _inZone = true;
-            _coroutine = StartCoroutine(Run());
+            if (collision.TryGetComponent(out ItemPhysics itemPhysics))
+            {
+                _inZone = true;
+                _coroutine = StartCoroutine(Run());
+            }
         }
-    }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.TryGetComponent(out ItemPhysics itemfall))
+        private void OnTriggerExit2D(Collider2D collision)
         {
-            StopCoroutine(_coroutine);
-            _inZone = false;
-            _coroutine = null;
+            if (collision.TryGetComponent(out ItemPhysics itemPhysics))
+            {
+                StopCoroutine(_coroutine);
+                _inZone = false;
+                _coroutine = null;
+            }
         }
-    }
 
-    private IEnumerator Run()
-    {
-        while(_inZone == true)
+        private IEnumerator Run()
         {
-            _controllerMovement.Run(_multiplier);
+            while (_inZone == true)
+            {
+                _controllerMovement.Run(_multiplier);
 
-            yield return null;
+                yield return null;
+            }
         }
     }
 }

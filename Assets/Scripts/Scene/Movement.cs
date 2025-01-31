@@ -1,70 +1,74 @@
+using Items;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using ETouch = UnityEngine.InputSystem.EnhancedTouch;
 
-[RequireComponent(typeof(RestrictMovement))]
-public class MovingAroundScene : TouchInputHandler
+namespace Scene
 {
-    [SerializeField] private ControllerPosition _controllerMovement;
-
-    private RestrictMovement _restrictMovement;
-    private Vector2 _touchPosition;
-
-    private void Awake()
+    [RequireComponent(typeof(RestrictMovement))]
+    public class MovingAroundScene : TouchInputHandler
     {
-        _restrictMovement = GetComponent<RestrictMovement>();
-    }
+        [SerializeField] private ControllerPosition _controllerMovement;
 
-    public override void OnFingerMove(Finger finger)
-    {
-        if (finger == MovementFinger)
+        private RestrictMovement _restrictMovement;
+        private Vector2 _touchPosition;
+
+        private void Awake()
         {
-            ETouch.Touch currentTouch = finger.currentTouch;
-            float newPositionX = (currentTouch.screenPosition - _touchPosition).normalized.x;
-            _controllerMovement.Run(newPositionX);
-            _touchPosition = currentTouch.screenPosition;
-            _restrictMovement.SetPosition();
+            _restrictMovement = GetComponent<RestrictMovement>();
         }
-    }
 
-    public override void OnFingerUp(Finger finger)
-    {
-        if (finger == MovementFinger)
+        public override void OnFingerMove(Finger finger)
         {
-            MovementFinger = null;
-        }
-    }
-
-    public override void OnFingerDown(Finger finger)
-    {
-        if (MovementFinger == null)
-        {
-            bool isItem = CheckItems(finger.screenPosition);
-
-            if(isItem == false)
+            if (finger == MovementFinger)
             {
-                MovementFinger = finger;
-                _touchPosition = finger.screenPosition;
+                ETouch.Touch currentTouch = finger.currentTouch;
+                float newPositionX = (currentTouch.screenPosition - _touchPosition).normalized.x;
+                _controllerMovement.Run(newPositionX);
+                _touchPosition = currentTouch.screenPosition;
+                _restrictMovement.SetPosition();
             }
         }
-    }
 
-    public bool CheckItems(Vector2 position)
-    {
-        Vector2 worldPosition = Camera.main.ScreenToWorldPoint(position);
-        RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
-        ItemPhysics itemFall = null;
-
-        if (hit.collider != null)
+        public override void OnFingerUp(Finger finger)
         {
-            itemFall = hit.transform.gameObject.GetComponent<ItemPhysics>();
+            if (finger == MovementFinger)
+            {
+                MovementFinger = null;
+            }
         }
 
-        if(itemFall != null)
+        public override void OnFingerDown(Finger finger)
         {
-            return true;
+            if (MovementFinger == null)
+            {
+                bool isItem = CheckItems(finger.screenPosition);
+
+                if (isItem == false)
+                {
+                    MovementFinger = finger;
+                    _touchPosition = finger.screenPosition;
+                }
+            }
         }
 
-        return false;
+        public bool CheckItems(Vector2 position)
+        {
+            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(position);
+            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
+            ItemPhysics itemFall = null;
+
+            if (hit.collider != null)
+            {
+                itemFall = hit.transform.gameObject.GetComponent<ItemPhysics>();
+            }
+
+            if (itemFall != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

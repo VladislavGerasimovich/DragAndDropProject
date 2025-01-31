@@ -758,6 +758,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controllerMovement: {fileID: 2097010437}
+  _restrictMovement: {fileID: 1499481752}
   _multiplier: 1
 --- !u!114 &427025179
 MonoBehaviour:
@@ -1466,6 +1467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controllerMovement: {fileID: 2097010437}
+  _restrictMovement: {fileID: 1499481752}
   _multiplier: -1
 --- !u!114 &1106725715
 MonoBehaviour:
@@ -2021,7 +2023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef90bdb5fe8059f44bd92732db57cf40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controllerPosition: {fileID: 2097010436}
+  _cameraControllerPosition: {fileID: 2097010436}
   _cinemachineVirtualCamera: {fileID: 318291850}
   _camera: {fileID: 519420031}
 --- !u!1 &1561603540

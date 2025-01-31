@@ -1,4 +1,7 @@
 using UnityEngine;
 
-public class Shelf : MonoBehaviour
-{}
+namespace Environment 
+{
+    public class Shelf : MonoBehaviour
+    {}
+}

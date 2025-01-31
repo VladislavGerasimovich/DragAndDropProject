@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class ControllerPosition : MonoBehaviour
+namespace Scene 
 {
-    private float _speed;
-
-    private void Awake()
+    public class ControllerPosition : MonoBehaviour
     {
-        _speed = 0.1f;
-    }
+        private float _speed;
 
-    public void Run(float newPositionX)
-    {
-        transform.position = new Vector2(transform.position.x + newPositionX * _speed, transform.position.y);
+        private void Awake()
+        {
+            _speed = 0.1f;
+        }
+
+        public void Run(float newPositionX)
+        {
+            transform.position = new Vector2(transform.position.x + newPositionX * _speed, transform.position.y);
+        }
     }
 }

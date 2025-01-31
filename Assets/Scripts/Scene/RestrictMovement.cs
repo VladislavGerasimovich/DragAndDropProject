@@ -1,17 +1,20 @@
 using Cinemachine;
 using UnityEngine;
 
-public class RestrictMovement : MonoBehaviour
+namespace Scene
 {
-    [SerializeField] private Transform _cameraControllerPosition;
-    [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
-    [SerializeField] private Camera _camera;
-
-    public void SetPosition()
+    public class RestrictMovement : MonoBehaviour
     {
-        if (Mathf.Abs(_cinemachineVirtualCamera.transform.position.x) > Mathf.Abs(_camera.transform.position.x))
+        [SerializeField] private Transform _cameraControllerPosition;
+        [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
+        [SerializeField] private Camera _camera;
+
+        public void SetPosition()
         {
-            _cameraControllerPosition.position = new Vector2(_camera.transform.position.x, _cinemachineVirtualCamera.transform.position.y);
+            if (Mathf.Abs(_cinemachineVirtualCamera.transform.position.x) > Mathf.Abs(_camera.transform.position.x))
+            {
+                _cameraControllerPosition.position = new Vector2(_camera.transform.position.x, _cinemachineVirtualCamera.transform.position.y);
+            }
         }
     }
 }
