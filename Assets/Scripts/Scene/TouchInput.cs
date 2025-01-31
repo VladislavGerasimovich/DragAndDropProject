@@ -7,7 +7,8 @@ namespace Scene
     public abstract class TouchInputHandler : MonoBehaviour
     {
         protected Finger MovementFinger;
-
+        //что бы проверить работу приложения в Play моде, необходимо в Input Debugger в Options выбрать:
+        //Simulate Touch Input From Mouse or Pen
         private void OnEnable()
         {
             EnhancedTouchSupport.Enable();

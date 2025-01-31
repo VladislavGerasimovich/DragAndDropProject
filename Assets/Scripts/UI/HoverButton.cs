@@ -23,6 +23,7 @@ namespace UI
 
         private void Start()
         {
+            //что бы добавить к кнопке событие Hover я написал следующее:
             _events = new Dictionary<Entry, UnityAction<BaseEventData>>();
             _button = GetComponent<Button>();
             EventTrigger trigger = _button.gameObject.AddComponent<EventTrigger>();
